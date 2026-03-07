@@ -1,0 +1,28 @@
+name: CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy-monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Execute Monitoring Workflow
+        run: |
+          python api_collector.py
+          python monitor.py
