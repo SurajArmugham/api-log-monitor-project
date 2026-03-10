@@ -1,3 +1,5 @@
+Testing new CI/CD pipeline structure
+
 API Log Monitoring Mini Project
 
 Overview

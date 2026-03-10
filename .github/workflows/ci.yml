@@ -1,12 +1,13 @@
 name: CI Pipeline
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  ci-checks:
+  build-artifact:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -16,16 +17,26 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Run API Collector
+      # TEST STAGE
+      - name: Compile Test (Syntax Validation)
+        run: |
+          python -m py_compile api_collector.py
+          python -m py_compile monitor.py
+
+      # BUILD DATA (generate logs)
+      - name: Generate API Logs
         run: |
           python api_collector.py
 
-      - name: Run Monitoring Script
-        run: |
-          python monitor.py
+      # ARTIFACT
+      - name: Upload Logs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-logs
+          path: logs/
