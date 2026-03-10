@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main
+      - "**"
 
 jobs:
   build-artifact:
@@ -23,10 +23,18 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      # TEST STAGE
+      - name: Compile Test (Syntax Validation)
+        run: |
+          python -m py_compile api_collector.py
+          python -m py_compile monitor.py
+
+      # BUILD DATA (generate logs)
       - name: Generate API Logs
         run: |
           python api_collector.py
 
+      # ARTIFACT
       - name: Upload Logs Artifact
         uses: actions/upload-artifact@v4
         with:
