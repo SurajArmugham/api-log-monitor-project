@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  ci-checks:
+  build-artifact:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +23,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run API Collector
+      - name: Generate API Logs
         run: |
           python api_collector.py
 
-      - name: Run Monitoring Script
-        run: |
-          python monitor.py
+      - name: Upload Logs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-logs
+          path: logs/
